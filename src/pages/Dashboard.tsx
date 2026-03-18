@@ -6,13 +6,12 @@ import RecentLogs from "@/components/RecentLogs";
 import HowItWorks from "@/components/HowItWorks";
 import { Bell, Search } from "lucide-react";
 
-const Index = () => {
+const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
 
       <main className="flex-1 overflow-auto">
-        {/* Top bar */}
         <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border px-8 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
@@ -24,7 +23,6 @@ const Index = () => {
             </button>
             <button className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors duration-150 relative">
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-success" />
             </button>
             <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-xs font-bold ml-1">
               U
@@ -32,7 +30,6 @@ const Index = () => {
           </div>
         </header>
 
-        {/* Content */}
         <div className="p-8 space-y-6 max-w-7xl">
           <EfficiencyCard />
           <StatsGrid />
@@ -51,4 +48,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Dashboard;

@@ -1,17 +1,7 @@
 import { motion } from "framer-motion";
 import { TrendingUp, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
 
 const EfficiencyCard = () => {
-  const [rtokenCount, setRtokenCount] = useState(1_284_392);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRtokenCount((prev) => prev + Math.floor(Math.random() * 5) + 1);
-    }, 2200);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -23,14 +13,13 @@ const EfficiencyCard = () => {
         <div>
           <p className="text-sm font-medium text-muted-foreground mb-1">Efficiency Multiplier</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-5xl font-extrabold text-foreground">1.5x</span>
-            <span className="text-sm text-success font-semibold flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              más requests
+            <span className="text-5xl font-extrabold text-foreground">—</span>
+            <span className="text-sm text-muted-foreground">
+              Sin datos aún
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            vs. proveedor estándar al mismo precio
+            El multiplicador se calculará con tu primer request
           </p>
         </div>
         <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
@@ -42,13 +31,11 @@ const EfficiencyCard = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-muted-foreground mb-0.5">rTokens generados</p>
-            <p className="font-mono text-lg font-semibold text-foreground animate-count-up">
-              {rtokenCount.toLocaleString()}
-            </p>
+            <p className="font-mono text-lg font-semibold text-foreground">0</p>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-success animate-pulse-glow" />
-            <span className="text-xs font-medium text-success">Generando en vivo</span>
+            <span className="w-2 h-2 rounded-full bg-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Esperando requests</span>
           </div>
         </div>
       </div>

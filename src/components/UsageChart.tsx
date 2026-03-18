@@ -1,15 +1,6 @@
 import { motion } from "framer-motion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
-const data = [
-  { day: "Lun", requests: 1800, savings: 420 },
-  { day: "Mar", requests: 2400, savings: 580 },
-  { day: "Mié", requests: 2100, savings: 510 },
-  { day: "Jue", requests: 3200, savings: 780 },
-  { day: "Vie", requests: 2900, savings: 700 },
-  { day: "Sáb", requests: 1600, savings: 380 },
-  { day: "Dom", requests: 1200, savings: 290 },
-];
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { BarChart3 } from "lucide-react";
 
 const UsageChart = () => {
   return (
@@ -36,34 +27,12 @@ const UsageChart = () => {
         </div>
       </div>
 
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="gradRequests" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(263 80% 64%)" stopOpacity={0.2} />
-                <stop offset="100%" stopColor="hsl(263 80% 64%)" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="gradSavings" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(160 93% 51%)" stopOpacity={0.2} />
-                <stop offset="100%" stopColor="hsl(160 93% 51%)" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(214 32% 91%)" vertical={false} />
-            <XAxis dataKey="day" tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 12, fill: "hsl(215 16% 47%)" }} axisLine={false} tickLine={false} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "hsl(0 0% 100%)",
-                border: "1px solid hsl(214 32% 91%)",
-                borderRadius: "0.5rem",
-                fontSize: "0.75rem",
-              }}
-            />
-            <Area type="monotone" dataKey="requests" stroke="hsl(263 80% 64%)" strokeWidth={2} fill="url(#gradRequests)" />
-            <Area type="monotone" dataKey="savings" stroke="hsl(160 93% 51%)" strokeWidth={2} fill="url(#gradSavings)" />
-          </AreaChart>
-        </ResponsiveContainer>
+      <div className="h-64 flex items-center justify-center">
+        <div className="text-center">
+          <BarChart3 className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground font-medium">Sin datos disponibles</p>
+          <p className="text-xs text-muted-foreground mt-1">Los gráficos aparecerán cuando empieces a hacer requests</p>
+        </div>
       </div>
     </motion.div>
   );
