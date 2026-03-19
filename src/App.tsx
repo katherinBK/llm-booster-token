@@ -6,6 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import ApiKeys from "./pages/ApiKeys.tsx";
+import Billing from "./pages/Billing.tsx";
+import Logs from "./pages/Logs.tsx";
+import Health from "./pages/Health.tsx";
+import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
