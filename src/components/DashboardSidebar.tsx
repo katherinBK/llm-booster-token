@@ -49,9 +49,9 @@ const DashboardSidebar = () => {
 
       <div className="p-4 border-t border-border">
         <div className="bg-muted rounded-lg p-3">
-          <p className="text-xs text-muted-foreground mb-1">Current Plan</p>
-          <p className="text-sm font-semibold text-foreground">Growth</p>
-          <p className="text-xs text-muted-foreground mt-1">50,000 req/mo included</p>
+          <p className="text-xs text-muted-foreground mb-1">Plan</p>
+          <p className="text-sm font-semibold text-foreground">Pay-as-you-go</p>
+          <p className="text-xs text-muted-foreground mt-1">Solo pagas lo que usas</p>
         </div>
       </div>
     </aside>
