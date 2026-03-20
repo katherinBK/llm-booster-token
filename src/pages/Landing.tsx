@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Zap, Shield, Code2, TrendingUp, ArrowRight, Cpu, Coins, Rocket, Key } from "lucide-react";
+import { Zap, Shield, Code2, TrendingUp, ArrowRight, Cpu, Coins, Rocket, Key, Plug } from "lucide-react";
 import heroVisual from "@/assets/hero-visual.png";
+import kairoLogo from "@/assets/kairo-logo.png";
 
 const features = [
   {
@@ -47,16 +48,14 @@ const Landing = () => {
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">R</span>
-            </div>
-            <span className="font-bold text-lg text-foreground tracking-tight">rToken</span>
+            <img src={kairoLogo} alt="Kairo" className="w-8 h-8" />
+            <span className="font-bold text-lg text-foreground tracking-tight">Kairo</span>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/dashboard">
-              <Button variant="ghost" size="sm">Dashboard</Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm">Iniciar sesión</Button>
             </Link>
-            <Link to="/dashboard">
+            <Link to="/auth">
               <Button variant="hero" size="sm">Comenzar gratis</Button>
             </Link>
           </div>
@@ -69,23 +68,23 @@ const Landing = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-1.5 mb-6">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse-glow" />
               <span className="text-xs font-medium text-primary">Potenciado por Solana</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-extrabold text-foreground leading-tight mb-4">
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.1] mb-4">
               Más requests de LLM,{" "}
               <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                 mismo precio
               </span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-              Nuestro backend genera <span className="font-mono text-foreground font-semibold">rTokens</span> mediante contratos en Solana por cada request que haces. El resultado: hasta <span className="text-success font-semibold">1.5x más requests</span> por el mismo costo que un proveedor estándar.
+              Nuestro backend genera <span className="font-mono text-foreground font-semibold">rTokens</span> mediante contratos en Solana por cada request que haces. El resultado: hasta <span className="text-success font-semibold">1.5x más requests</span> por el mismo costo.
             </p>
             <div className="flex items-center gap-3">
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button variant="hero" size="lg" className="gap-2">
                   Empezar ahora <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -99,11 +98,10 @@ const Landing = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            <img src={heroVisual} alt="Red de nodos representando la infraestructura rToken" className="w-full rounded-2xl" />
-            {/* Floating stat */}
+            <img src={heroVisual} alt="Infraestructura Kairo" className="w-full rounded-2xl" />
             <div className="absolute bottom-6 left-6 bg-card/90 backdrop-blur-sm border border-border rounded-xl p-4 shadow-lg">
               <p className="text-xs text-muted-foreground mb-1">Multiplicador de eficiencia</p>
               <p className="text-3xl font-extrabold text-foreground">1.5x</p>
@@ -117,7 +115,7 @@ const Landing = () => {
       <section className="bg-muted/40 border-y border-border py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-3">¿Por qué rToken?</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-3">¿Por qué Kairo?</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Optimizamos el costo de cada request LLM usando la velocidad y eficiencia de Solana — sin que cambies tu flujo de trabajo.
             </p>
@@ -126,10 +124,10 @@ const Landing = () => {
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.06 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-card border border-border rounded-xl p-6"
               >
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -156,10 +154,10 @@ const Landing = () => {
             {steps.map((s, i) => (
               <motion.div
                 key={s.step}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.08 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center"
               >
                 <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-4">
@@ -174,37 +172,93 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Comparison table */}
+      {/* Enterprise BYOK */}
       <section className="bg-muted/40 border-y border-border py-20">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-3">Comparación de valor</h2>
-            <p className="text-muted-foreground">Mismo gasto, más capacidad.</p>
-          </div>
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Plan</th>
-                  <th className="text-center py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
-                  <th className="text-center py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Proveedor estándar</th>
-                  <th className="text-center py-4 px-6 text-xs font-semibold text-success uppercase tracking-wider">Con rToken</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisons.map((c) => (
-                  <tr key={c.label} className="border-b border-border/50 last:border-0">
-                    <td className="py-4 px-6 font-medium text-foreground">{c.label}</td>
-                    <td className="py-4 px-6 text-center font-mono text-foreground">{c.standard}</td>
-                    <td className="py-4 px-6 text-center text-muted-foreground">{c.label.split("/")[0]}</td>
-                    <td className="py-4 px-6 text-center">
-                      <span className="font-semibold text-success">{c.benefit}</span>
-                    </td>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-card border border-border rounded-2xl p-8 lg:p-12"
+          >
+            <div className="flex items-start gap-6">
+              <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-primary/10 items-center justify-center shrink-0">
+                <Plug className="w-8 h-8 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-3 py-1 mb-4">
+                  <span className="text-xs font-medium text-primary">Enterprise</span>
+                </div>
+                <h2 className="text-2xl font-bold text-foreground mb-3">
+                  ¿Ya tienes tu propia API key?
+                </h2>
+                <p className="text-muted-foreground leading-relaxed mb-4 max-w-xl">
+                  Si tu empresa ya tiene credenciales con OpenAI, Anthropic, Google u otro proveedor de IA, puedes conectarlas directamente a Kairo. Nuestro sistema tokeniza tus requests existentes con rTokens en Solana, <span className="text-success font-semibold">subsidiando hasta un 50% de tus costos</span> sin cambiar de proveedor.
+                </p>
+                <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                    Conecta tu API key actual — sin migración
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                    rTokens se generan sobre tu consumo existente
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                    Soporte dedicado y onboarding personalizado
+                  </li>
+                </ul>
+                <Link to="/auth">
+                  <Button variant="hero" size="lg" className="gap-2">
+                    Hablar con ventas <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Comparison table */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-3">Comparación de valor</h2>
+              <p className="text-muted-foreground">Mismo gasto, más capacidad.</p>
+            </div>
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="text-left py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Plan</th>
+                    <th className="text-center py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Precio</th>
+                    <th className="text-center py-4 px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Estándar</th>
+                    <th className="text-center py-4 px-6 text-xs font-semibold text-success uppercase tracking-wider">Con Kairo</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {comparisons.map((c) => (
+                    <tr key={c.label} className="border-b border-border/50 last:border-0">
+                      <td className="py-4 px-6 font-medium text-foreground">{c.label}</td>
+                      <td className="py-4 px-6 text-center font-mono text-foreground">{c.standard}</td>
+                      <td className="py-4 px-6 text-center text-muted-foreground">{c.label.split("/")[0]}</td>
+                      <td className="py-4 px-6 text-center">
+                        <span className="font-semibold text-success">{c.benefit}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -214,8 +268,8 @@ const Landing = () => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Empieza a ahorrar en tus requests LLM hoy
@@ -223,7 +277,7 @@ const Landing = () => {
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
               Sin wallet, sin tokens, sin complejidad. Solo más requests por tu dinero.
             </p>
-            <Link to="/dashboard">
+            <Link to="/auth">
               <Button variant="hero" size="lg" className="gap-2">
                 Crear cuenta gratis <ArrowRight className="w-4 h-4" />
               </Button>
@@ -236,12 +290,10 @@ const Landing = () => {
       <footer className="border-t border-border py-8">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-[10px]">R</span>
-            </div>
-            <span className="text-sm font-semibold text-foreground">rToken</span>
+            <img src={kairoLogo} alt="Kairo" className="w-6 h-6" />
+            <span className="text-sm font-semibold text-foreground">Kairo</span>
           </div>
-          <p className="text-xs text-muted-foreground">© 2026 rToken. Todos los derechos reservados.</p>
+          <p className="text-xs text-muted-foreground">© 2026 Kairo. Todos los derechos reservados.</p>
         </div>
       </footer>
     </div>
