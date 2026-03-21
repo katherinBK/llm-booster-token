@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import kairoLogo from "@/assets/kairo-logo.png";
+import solanaLogo from "@/assets/solana-logo.png";
 
 const navItems = [
   { icon: BarChart3, label: "Usage", href: "/dashboard" },
