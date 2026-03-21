@@ -69,6 +69,11 @@ const DashboardSidebar = () => {
           <LogOut className="w-4 h-4" />
           Cerrar sesión
         </button>
+        <div className="flex items-center justify-center gap-1.5 pt-2 opacity-60">
+          <span className="text-[10px] text-muted-foreground">Powered by</span>
+          <img src={solanaLogo} alt="Solana" className="w-3.5 h-3.5" />
+          <span className="text-[10px] font-semibold text-muted-foreground">Solana</span>
+        </div>
       </div>
     </aside>
   );
