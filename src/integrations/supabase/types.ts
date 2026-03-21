@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          created_at: string
+          encrypted_key: string
+          id: string
+          last_used_at: string | null
+          model_id: string
+          name: string
+          provider_id: string
+          request_count: number
+          rtokens_generated: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          encrypted_key: string
+          id?: string
+          last_used_at?: string | null
+          model_id: string
+          name: string
+          provider_id: string
+          request_count?: number
+          rtokens_generated?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          encrypted_key?: string
+          id?: string
+          last_used_at?: string | null
+          model_id?: string
+          name?: string
+          provider_id?: string
+          request_count?: number
+          rtokens_generated?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           company: string | null
@@ -43,6 +82,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      usage_logs: {
+        Row: {
+          api_key_id: string | null
+          cost_usd: number
+          created_at: string
+          endpoint: string
+          id: string
+          latency_ms: number
+          method: string
+          model_id: string
+          provider_id: string
+          rtokens_generated: number
+          savings_usd: number
+          status_code: number
+          tokens_input: number
+          tokens_output: number
+          user_id: string
+        }
+        Insert: {
+          api_key_id?: string | null
+          cost_usd?: number
+          created_at?: string
+          endpoint?: string
+          id?: string
+          latency_ms?: number
+          method?: string
+          model_id: string
+          provider_id: string
+          rtokens_generated?: number
+          savings_usd?: number
+          status_code?: number
+          tokens_input?: number
+          tokens_output?: number
+          user_id: string
+        }
+        Update: {
+          api_key_id?: string | null
+          cost_usd?: number
+          created_at?: string
+          endpoint?: string
+          id?: string
+          latency_ms?: number
+          method?: string
+          model_id?: string
+          provider_id?: string
+          rtokens_generated?: number
+          savings_usd?: number
+          status_code?: number
+          tokens_input?: number
+          tokens_output?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

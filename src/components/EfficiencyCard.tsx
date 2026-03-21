@@ -1,7 +1,15 @@
 import { motion } from "framer-motion";
 import { TrendingUp, Zap } from "lucide-react";
+import type { DashboardStats } from "@/hooks/use-dashboard-data";
 
-const EfficiencyCard = () => {
+interface EfficiencyCardProps {
+  stats: DashboardStats;
+  loading: boolean;
+}
+
+const EfficiencyCard = ({ stats, loading }: EfficiencyCardProps) => {
+  const hasData = stats.efficiencyMultiplier > 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -13,13 +21,15 @@ const EfficiencyCard = () => {
         <div>
           <p className="text-sm font-medium text-muted-foreground mb-1">Efficiency Multiplier</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-5xl font-extrabold text-foreground">—</span>
+            <span className="text-5xl font-extrabold text-foreground">
+              {loading ? "—" : hasData ? `${stats.efficiencyMultiplier.toFixed(2)}x` : "—"}
+            </span>
             <span className="text-sm text-muted-foreground">
-              Sin datos aún
+              {hasData ? "más eficiente" : "Sin datos aún"}
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            El multiplicador se calculará con tu primer request
+            {hasData ? "Basado en tu historial de requests" : "El multiplicador se calculará con tu primer request"}
           </p>
         </div>
         <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
@@ -31,11 +41,22 @@ const EfficiencyCard = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-muted-foreground mb-0.5">rTokens generados</p>
-            <p className="font-mono text-lg font-semibold text-foreground">0</p>
+            <p className="font-mono text-lg font-semibold text-foreground">
+              {loading ? "—" : stats.rTokensTotal.toLocaleString()}
+            </p>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">Esperando requests</span>
+            {hasData ? (
+              <>
+                <TrendingUp className="w-3 h-3 text-green-500" />
+                <span className="text-xs font-medium text-green-500">Activo</span>
+              </>
+            ) : (
+              <>
+                <span className="w-2 h-2 rounded-full bg-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">Esperando requests</span>
+              </>
+            )}
           </div>
         </div>
       </div>

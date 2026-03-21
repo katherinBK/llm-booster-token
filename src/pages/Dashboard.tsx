@@ -5,8 +5,11 @@ import UsageChart from "@/components/UsageChart";
 import RecentLogs from "@/components/RecentLogs";
 import HowItWorks from "@/components/HowItWorks";
 import { Bell, Search } from "lucide-react";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
 
 const Dashboard = () => {
+  const { stats, recentLogs, chartData, loading } = useDashboardData();
+
   return (
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
@@ -31,17 +34,17 @@ const Dashboard = () => {
         </header>
 
         <div className="p-8 space-y-6 max-w-7xl">
-          <EfficiencyCard />
-          <StatsGrid />
+          <EfficiencyCard stats={stats} loading={loading} />
+          <StatsGrid stats={stats} loading={loading} />
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-2">
-              <UsageChart />
+              <UsageChart chartData={chartData} loading={loading} />
             </div>
             <div className="xl:col-span-1">
               <HowItWorks />
             </div>
           </div>
-          <RecentLogs />
+          <RecentLogs logs={recentLogs} loading={loading} />
         </div>
       </main>
     </div>
