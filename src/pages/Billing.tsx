@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Check, CreditCard, Zap, Building2, ArrowRight } from "lucide-react";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, CreditCard, Zap, Building2, ArrowRight, Loader2, Link as LinkIcon } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Search } from "lucide-react";
+import { toast } from "sonner";
+import solanaLogo from "@/assets/solana-logo.png";
 
 const plans = [
   {
@@ -21,6 +23,7 @@ const plans = [
       "Dashboard de uso básico",
     ],
     popular: false,
+    amount: 29
   },
   {
     name: "Pro",
@@ -38,6 +41,7 @@ const plans = [
       "Webhooks personalizados",
     ],
     popular: true,
+    amount: 79
   },
   {
     name: "Enterprise",
@@ -55,11 +59,59 @@ const plans = [
       "Facturación a medida",
     ],
     popular: false,
+    amount: 0
   },
 ];
 
 const Billing = () => {
   const [currentPlan] = useState("pay-as-you-go");
+  const [paymentData, setPaymentData] = useState<any>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleSelectPlan = async (amount: number, planName: string) => {
+    if (amount === 0) return;
+    setIsGenerating(true);
+    setPaymentData(null);
+    try {
+      const res = await fetch("http://localhost:3001/api/payment/generate-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, memo: `Pago Plan ${planName}` })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setPaymentData(data);
+      toast.success("Enlace de pago Solana Pay testnet generado");
+    } catch (e: any) {
+      toast.error("Error generando pago: " + e.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    if (!paymentData) return;
+    setIsVerifying(true);
+    try {
+      const res = await fetch("http://localhost:3001/api/payment/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference: paymentData.reference })
+      });
+      const data = await res.json();
+      if (data.confirmed) {
+        toast.success("Pago verificado exitosamente!");
+        setPaymentData(null);
+      } else {
+        toast.error(data.message || "Aún no detectamos la transacción");
+      }
+    } catch (e: any) {
+      toast.error("Error verificando pago: " + e.message);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -68,7 +120,7 @@ const Billing = () => {
         <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border px-8 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-foreground">Billing</h1>
-            <p className="text-xs text-muted-foreground">Gestiona tu plan y facturación</p>
+            <p className="text-xs text-muted-foreground">Gestiona tu plan y facturación vía Solana</p>
           </div>
           <div className="flex items-center gap-3">
             <button className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors duration-150">
@@ -92,6 +144,53 @@ const Billing = () => {
               <Badge variant="secondary" className="text-xs">Activo</Badge>
             </div>
           </motion.div>
+
+          {/* Payment Solana Pay Modal (Inline) */}
+          <AnimatePresence>
+            {paymentData && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl p-6 mb-8 mt-2 flex flex-col md:flex-row gap-6 relative">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                       <img src={solanaLogo} alt="Solana" className="w-5 h-5 object-contain" />
+                       <h3 className="text-lg font-semibold text-white">Pago con Solana Pay</h3>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-4">
+                      Transfiere {paymentData.amount} USDC (Testnet/Devnet) usando el enlace Solana Pay, o envía manualmente a la Merchant Address e incluye la referencia. (Wallet-less checkout)
+                    </p>
+                    <div className="space-y-3">
+                      <div className="bg-[#0a0a0a] p-3 rounded-md border border-[#333]">
+                        <p className="text-xs text-gray-500 mb-1">Enlace Solana Pay</p>
+                        <a href={paymentData.url} className="text-sm font-mono text-[#9945FF] hover:underline break-all">{paymentData.url}</a>
+                      </div>
+                      <div className="bg-[#0a0a0a] p-3 rounded-md border border-[#333]">
+                        <p className="text-xs text-gray-500 mb-1">Merchant Address</p>
+                        <p className="text-sm font-mono text-gray-300 break-all">{paymentData.recipient}</p>
+                      </div>
+                      <div className="bg-[#0a0a0a] p-3 rounded-md border border-[#333]">
+                        <p className="text-xs text-gray-500 mb-1">Reference ID (Requerido para confirmación)</p>
+                        <p className="text-sm font-mono text-gray-300 break-all">{paymentData.reference}</p>
+                      </div>
+                    </div>
+                    <div className="mt-5 flex gap-3">
+                      <Button onClick={handleVerify} disabled={isVerifying} className="bg-[#9945FF] hover:bg-[#8A2BE2] text-white">
+                        {isVerifying && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                        Verificar Transacción On-Chain
+                      </Button>
+                      <Button variant="outline" onClick={() => setPaymentData(null)} disabled={isVerifying}>
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Plans Grid */}
           <div>
@@ -135,11 +234,17 @@ const Billing = () => {
                     ))}
                   </ul>
 
-                  <Button variant={plan.popular ? "default" : "outline"} className="w-full">
-                    {plan.name === "Enterprise" ? (
-                      <>Contactar ventas <ArrowRight className="w-4 h-4" /></>
+                  <Button 
+                    variant={plan.popular ? "default" : "outline"} 
+                    className="w-full relative overflow-hidden group"
+                    onClick={() => handleSelectPlan(plan.amount, plan.name)}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : 
+                       plan.name === "Enterprise" ? (
+                      <>Contactar ventas <ArrowRight className="w-4 h-4 ml-1" /></>
                     ) : (
-                      "Seleccionar plan"
+                      <>Pagar con Solana <img src={solanaLogo} alt="SOL" className="w-3.5 h-3.5 ml-1.5 opacity-70 group-hover:opacity-100 transition-opacity" /></>
                     )}
                   </Button>
                 </motion.div>
@@ -153,7 +258,7 @@ const Billing = () => {
             <div className="py-8 text-center">
               <CreditCard className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
               <p className="text-sm text-muted-foreground font-medium">No hay pagos registrados</p>
-              <p className="text-xs text-muted-foreground mt-1">Tu historial de facturación aparecerá aquí</p>
+              <p className="text-xs text-muted-foreground mt-1">Tu historial de facturación aparecerá aquí una vez pagues con Solana Pay</p>
             </div>
           </motion.div>
         </div>

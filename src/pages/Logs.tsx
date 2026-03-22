@@ -1,22 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ScrollText, Filter, Download, RefreshCw } from "lucide-react";
+import { ScrollText, Filter, Download, RefreshCw, Loader2 } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bell, Search } from "lucide-react";
-
-const mockLogs = [
-  { id: "1", timestamp: "2025-03-19 14:32:01", method: "POST", endpoint: "/v1/chat/completions", provider: "OpenAI", model: "gpt-4o", status: 200, latency: "320ms", tokens: 1240, rTokens: 45 },
-  { id: "2", timestamp: "2025-03-19 14:31:58", method: "POST", endpoint: "/v1/chat/completions", provider: "Gemini", model: "gemini-pro", status: 200, latency: "280ms", tokens: 890, rTokens: 32 },
-  { id: "3", timestamp: "2025-03-19 14:31:45", method: "POST", endpoint: "/v1/embeddings", provider: "OpenAI", model: "text-embedding-3", status: 200, latency: "95ms", tokens: 512, rTokens: 18 },
-  { id: "4", timestamp: "2025-03-19 14:31:30", method: "POST", endpoint: "/v1/chat/completions", provider: "Anthropic", model: "claude-3.5", status: 429, latency: "—", tokens: 0, rTokens: 0 },
-  { id: "5", timestamp: "2025-03-19 14:31:12", method: "POST", endpoint: "/v1/chat/completions", provider: "OpenRouter", model: "mixtral-8x7b", status: 200, latency: "410ms", tokens: 2100, rTokens: 76 },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const Logs = () => {
   const [filter] = useState("all");
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: "0", success: "0%", rTokens: "0" });
+
+  const fetchLogs = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("usage_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (data && !error) {
+      setLogs(data);
+      
+      const successCount = data.filter(l => l.status_code === 200).length;
+      const successRate = data.length > 0 ? ((successCount / data.length) * 100).toFixed(1) : 0;
+      const totalRtokens = data.reduce((acc, curr) => acc + (curr.rtokens_generated || 0), 0);
+
+      setStats({
+        total: data.length.toString(),
+        success: `${successRate}%`,
+        rTokens: totalRtokens.toLocaleString()
+      });
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -46,7 +77,7 @@ const Logs = () => {
               <Badge variant="secondary" className="text-xs">{filter === "all" ? "Todos" : filter}</Badge>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm"><RefreshCw className="w-3.5 h-3.5 mr-1.5" />Actualizar</Button>
+              <Button variant="outline" size="sm" onClick={fetchLogs}><RefreshCw className="w-3.5 h-3.5 mr-1.5" />Actualizar</Button>
               <Button variant="outline" size="sm"><Download className="w-3.5 h-3.5 mr-1.5" />Exportar</Button>
             </div>
           </motion.div>
@@ -67,20 +98,32 @@ const Logs = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockLogs.map((log) => (
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="h-24 text-center">
+                      <Loader2 className="w-5 h-5 animate-spin mx-auto text-muted-foreground" />
+                    </TableCell>
+                  </TableRow>
+                ) : logs.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="h-24 text-center text-xs text-muted-foreground">
+                      No hay logs registrados aún.
+                    </TableCell>
+                  </TableRow>
+                ) : logs.map((log) => (
                   <TableRow key={log.id} className="hover:bg-muted/30 cursor-pointer">
-                    <TableCell className="text-xs font-mono text-muted-foreground">{log.timestamp}</TableCell>
+                    <TableCell className="text-xs font-mono text-muted-foreground">{new Date(log.created_at).toLocaleString()}</TableCell>
                     <TableCell className="text-xs font-mono">{log.endpoint}</TableCell>
-                    <TableCell className="text-xs">{log.provider}</TableCell>
-                    <TableCell className="text-xs">{log.model}</TableCell>
+                    <TableCell className="text-xs capitalize">{log.provider_id}</TableCell>
+                    <TableCell className="text-xs">{log.model_id}</TableCell>
                     <TableCell>
-                      <Badge variant={log.status === 200 ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
-                        {log.status}
+                      <Badge variant={log.status_code === 200 ? "default" : "destructive"} className="text-[10px] px-1.5 py-0">
+                        {log.status_code}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{log.latency}</TableCell>
-                    <TableCell className="text-xs text-right font-mono">{log.tokens.toLocaleString()}</TableCell>
-                    <TableCell className="text-xs text-right font-mono text-accent">{log.rTokens}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{log.latency_ms}ms</TableCell>
+                    <TableCell className="text-xs text-right font-mono">{(log.tokens_input + log.tokens_output).toLocaleString()}</TableCell>
+                    <TableCell className="text-xs text-right font-mono text-accent">+{log.rtokens_generated}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -90,9 +133,9 @@ const Logs = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { label: "Total requests (hoy)", value: "1,247" },
-              { label: "Tasa de éxito", value: "98.4%" },
-              { label: "rTokens generados", value: "3,892" },
+              { label: "Total requests (histórico)", value: stats.total },
+              { label: "Tasa de éxito", value: stats.success },
+              { label: "rTokens generados", value: stats.rTokens },
             ].map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.05 }} className="bg-card border border-border rounded-xl p-4">
                 <p className="text-xs text-muted-foreground">{stat.label}</p>

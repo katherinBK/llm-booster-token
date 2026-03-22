@@ -98,13 +98,28 @@ const ApiKeys = () => {
         </header>
 
         <div className="p-8 max-w-4xl space-y-6">
-          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-foreground">Bring Your Own Key (BYOK)</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Conecta tu API key de OpenAI, OpenRouter o Google directamente. Kairo optimiza tus requests con rTokens sin importar el proveedor.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Bring Your Own Key (BYOK)</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Conecta tu API key de OpenAI, OpenRouter o Google directamente. Kairo optimiza tus requests con rTokens sin importar el proveedor.
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 flex items-start gap-3">
+              <Key className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Punto de Integración (Base URL)</p>
+                <p className="text-xs text-muted-foreground mt-1 mb-2">
+                  Usa tu clave Kairo en cualquier SDK (OpenAI/LangChain) cambiando la Base URL. Solo necesitas el header estándar <code className="bg-muted px-1 py-0.5 rounded">Authorization: Bearer</code>.
+                </p>
+                <code className="text-xs bg-background border border-border px-2 py-1 rounded text-foreground font-mono select-all">
+                  http://localhost:3001/v1
+                </code>
+              </div>
             </div>
           </div>
 
