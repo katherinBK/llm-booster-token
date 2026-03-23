@@ -212,6 +212,7 @@ pub struct RegisterUsage<'info> {
         bump
     )]
     pub user_state: Account<'info, UserState>,
+    /// CHECK: Only used for PDA derivation
     pub user_pubkey: AccountInfo<'info>,
 
     #[account(mut)]

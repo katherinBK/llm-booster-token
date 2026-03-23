@@ -19,12 +19,16 @@ const wallet = new Wallet(adminKeypair);
 // Provider default de Anchor
 const provider = new AnchorProvider(connection, wallet, AnchorProvider.defaultOptions());
 
-// Program ID extraído de Anchor.toml
-const PROGRAM_ID = new PublicKey('J2FyAhdPJ94JfvWdRNtik96dCCk4pwhsXoPKPKCe2UfM');
-const program = new Program(idl, PROGRAM_ID, provider);
+// Program ID extraído de idl.json
+const PROGRAM_ID = new PublicKey(idl.address);
+const program = new Program(idl, provider);
 
 // Semillas para PDAs
 const getGlobalStatePDA = () => {
+    // Usar la dirección previamente inicializada si está en el .env
+    if (process.env.GLOBAL_STATE_PDA) {
+        return new PublicKey(process.env.GLOBAL_STATE_PDA);
+    }
     return PublicKey.findProgramAddressSync([Buffer.from("global")], PROGRAM_ID)[0];
 };
 

@@ -1,4 +1,4 @@
-import { BarChart3, Key, CreditCard, ScrollText, Activity, Settings, LogOut } from "lucide-react";
+import { BarChart3, Key, CreditCard, ScrollText, Activity, Settings, LogOut, Zap } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import solanaLogo from "@/assets/solana-logo.png";
 
 const navItems = [
   { icon: BarChart3, label: "Usage", href: "/dashboard" },
+  { icon: Zap, label: "Playground", href: "/dashboard/playground" },
   { icon: Key, label: "API Keys", href: "/dashboard/api-keys" },
   { icon: CreditCard, label: "Billing", href: "/dashboard/billing" },
   { icon: ScrollText, label: "Logs", href: "/dashboard/logs" },

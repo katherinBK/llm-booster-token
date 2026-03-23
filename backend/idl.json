@@ -1,217 +1,108 @@
 {
-  "version": "0.1.0",
-  "name": "llm_protocol",
+  "address": "J3Fh7HnipJc86C54hf7QNd7Pgqhj7m4b1VHq1CyaB8pp",
+  "metadata": {
+    "name": "llm_protocol",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
   "instructions": [
     {
       "name": "initialize",
+      "discriminator": [175, 175, 109, 31, 13, 152, 155, 237],
       "accounts": [
-        {
-          "name": "globalState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "rewardMint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rewardVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
+        { "name": "globalState", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }] } },
+        { "name": "rewardMint" },
+        { "name": "rewardVault", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [114, 101, 119, 97, 114, 100, 95, 118, 97, 117, 108, 116] }] } },
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "systemProgram", "address": "11111111111111111111111111111111" },
+        { "name": "tokenProgram", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+        { "name": "rent", "address": "SysvarRent111111111111111111111111111111111" }
       ],
-      "args": [
-        {
-          "name": "rewardRate",
-          "type": "u64"
-        }
-      ]
+      "args": [{ "name": "rewardRate", "type": "u64" }]
     },
     {
       "name": "registerUsage",
+      "discriminator": [201, 109, 78, 241, 130, 48, 126, 111],
       "accounts": [
-        {
-          "name": "globalState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "userState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "userPubkey",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+        { "name": "globalState", "writable": true },
+        { "name": "userState", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [117, 115, 101, 114] }, { "kind": "account", "path": "userPubkey" }] } },
+        { "name": "userPubkey" },
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "systemProgram", "address": "11111111111111111111111111111111" }
       ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
+      "args": [{ "name": "amount", "type": "u64" }]
     },
     {
       "name": "fundRewardVault",
+      "discriminator": [9, 198, 202, 115, 106, 247, 227, 119],
       "accounts": [
-        {
-          "name": "globalState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "rewardVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "adminTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+        { "name": "globalState", "writable": true },
+        { "name": "rewardVault", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [114, 101, 119, 97, 114, 100, 95, 118, 97, 117, 108, 116] }] } },
+        { "name": "adminTokenAccount", "writable": true },
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "tokenProgram", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" }
       ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
+      "args": [{ "name": "amount", "type": "u64" }]
     },
     {
       "name": "claimReward",
+      "discriminator": [149, 95, 181, 242, 94, 90, 158, 162],
       "accounts": [
-        {
-          "name": "globalState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "userState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "rewardVault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "destinationAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
+        { "name": "globalState", "writable": true },
+        { "name": "userState", "writable": true },
+        { "name": "rewardVault", "writable": true, "pda": { "seeds": [{ "kind": "const", "value": [114, 101, 119, 97, 114, 100, 95, 118, 97, 117, 108, 116] }] } },
+        { "name": "destinationAccount", "writable": true },
+        { "name": "admin", "writable": true, "signer": true },
+        { "name": "tokenProgram", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" }
       ],
       "args": []
     },
     {
       "name": "updateRewardRate",
+      "discriminator": [105, 157, 0, 185, 21, 144, 163, 159],
       "accounts": [
-        {
-          "name": "globalState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "admin",
-          "isMut": true,
-          "isSigner": true
-        }
+        { "name": "globalState", "writable": true },
+        { "name": "admin", "writable": true, "signer": true }
       ],
-      "args": [
-        {
-          "name": "newRate",
-          "type": "u64"
-        }
-      ]
+      "args": [{ "name": "newRate", "type": "u64" }]
     }
   ],
   "accounts": [
     {
       "name": "GlobalState",
+      "discriminator": [163, 46, 74, 168, 216, 123, 133, 98]
+    },
+    {
+      "name": "UserState",
+      "discriminator": [72, 177, 85, 249, 76, 167, 186, 126]
+    }
+  ],
+  "events": [
+    {
+      "name": "UsageRegisteredEvent",
+      "discriminator": [0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NoRewardsToClaim",
+      "msg": "Este usuario aun no ha generado recompensas"
+    }
+  ],
+  "types": [
+    {
+      "name": "GlobalState",
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "admin",
-            "type": "publicKey"
-          },
-          {
-            "name": "rewardMint",
-            "type": "publicKey"
-          },
-          {
-            "name": "rewardVaultBump",
-            "type": "u8"
-          },
-          {
-            "name": "rewardRate",
-            "type": "u64"
-          },
-          {
-            "name": "lastUpdateTime",
-            "type": "i64"
-          },
-          {
-            "name": "rewardPerUsageStored",
-            "type": "u128"
-          },
-          {
-            "name": "totalUsage",
-            "type": "u64"
-          }
+          { "name": "admin", "type": "pubkey" },
+          { "name": "rewardMint", "type": "pubkey" },
+          { "name": "rewardVaultBump", "type": "u8" },
+          { "name": "rewardRate", "type": "u64" },
+          { "name": "lastUpdateTime", "type": "i64" },
+          { "name": "rewardPerUsageStored", "type": "u128" },
+          { "name": "totalUsage", "type": "u64" }
         ]
       }
     },
@@ -220,49 +111,22 @@
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "userUsage",
-            "type": "u64"
-          },
-          {
-            "name": "userRewardPerUsagePaid",
-            "type": "u128"
-          },
-          {
-            "name": "rewards",
-            "type": "u64"
-          }
+          { "name": "userUsage", "type": "u64" },
+          { "name": "userRewardPerUsagePaid", "type": "u128" },
+          { "name": "rewards", "type": "u64" }
         ]
       }
-    }
-  ],
-  "events": [
+    },
     {
       "name": "UsageRegisteredEvent",
-      "fields": [
-        {
-          "name": "userPubkey",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "amount",
-          "type": "u64",
-          "index": false
-        },
-        {
-          "name": "totalUserUsage",
-          "type": "u64",
-          "index": false
-        }
-      ]
-    }
-  ],
-  "errors": [
-    {
-      "code": 6000,
-      "name": "NoRewardsToClaim",
-      "msg": "Este usuario aun no ha generado recompensas"
+      "type": {
+        "kind": "struct",
+        "fields": [
+          { "name": "userPubkey", "type": "pubkey" },
+          { "name": "amount", "type": "u64" },
+          { "name": "totalUserUsage", "type": "u64" }
+        ]
+      }
     }
   ]
 }

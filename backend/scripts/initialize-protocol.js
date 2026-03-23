@@ -8,7 +8,9 @@ const { Connection, Keypair, PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } = re
 const { Program, AnchorProvider, Wallet, BN } = require('@coral-xyz/anchor');
 const { createMint, TOKEN_PROGRAM_ID } = require('@solana/spl-token');
 const idl = require('../idl.json');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config(); 
+require('dotenv').config({ path: './.env' });
+
 
 // 1. CONFIGURATION
 const RPC_URL = process.env.SOLANA_RPC || 'https://api.devnet.solana.com';
@@ -30,8 +32,8 @@ async function initialize() {
     const wallet = new Wallet(adminKeypair);
 
     const provider = new AnchorProvider(connection, wallet, AnchorProvider.defaultOptions());
-    const programId = new PublicKey(PROGRAM_ID_STR);
-    const program = new Program(idl, programId, provider);
+    const program = new Program(idl, provider);
+
 
     console.log(`📡 Conectado a: ${RPC_URL}`);
     console.log(`🔑 Admin Pubkey: ${adminKeypair.publicKey.toBase58()}`);
@@ -49,8 +51,10 @@ async function initialize() {
         console.log(`✅ Reward Mint creado: ${rewardMint.toBase58()}`);
 
         // 3. DERIVAR PDAs
+        const programId = new PublicKey(idl.address);
         const [globalState] = PublicKey.findProgramAddressSync([Buffer.from("global")], programId);
         const [rewardVault] = PublicKey.findProgramAddressSync([Buffer.from("reward_vault")], programId);
+
 
         console.log('\n🛠️ Llamando a la instrucción "initialize"...');
         const tx = await program.methods.initialize(REWARD_RATE)
@@ -68,7 +72,8 @@ async function initialize() {
         console.log(`\n🎉 PROTOCOLO INICIALIZADO CON ÉXITO!`);
         console.log(`🔗 Transaction Signature: ${tx}`);
         console.log('\n--- GUARDAR ESTOS DATOS ---');
-        console.log(`PROGRAM_ID: ${programId.toBase58()}`);
+        console.log(`PROGRAM_ID: ${idl.address}`);
+
         console.log(`GLOBAL_STATE_PDA: ${globalState.toBase58()}`);
         console.log(`REWARD_VAULT_PDA: ${rewardVault.toBase58()}`);
         console.log(`REWARD_MINT_ADDR: ${rewardMint.toBase58()}`);

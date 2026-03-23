@@ -13,12 +13,13 @@ export interface ApiKey {
 export const generateRandomKey = (providerId: string) => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const prefixMap: Record<string, string> = {
-    gemini: "rk_gem_",
-    openrouter: "rk_or_",
+    gemini: "kairo_gem_",
+    openrouter: "kairo_or_",
+    openai: "kairo_ai_",
   };
-  const prefix = prefixMap[providerId] || "rk_live_";
+  const prefix = prefixMap[providerId] || "kairo_live_";
   let result = prefix;
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 48; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;

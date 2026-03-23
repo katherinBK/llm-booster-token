@@ -8,6 +8,7 @@ import ApiKeyCard from "@/components/api-keys/ApiKeyCard";
 import CreateKeyForm from "@/components/api-keys/CreateKeyForm";
 import type { ApiKey } from "@/components/api-keys/types";
 import { supabase } from "@/integrations/supabase/client";
+import { kairoSupabase } from "@/integrations/supabase/kairo-client";
 
 const ApiKeys = () => {
   const [keys, setKeys] = useState<ApiKey[]>([]);
@@ -20,7 +21,7 @@ const ApiKeys = () => {
   const fetchKeys = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data } = await supabase
+    const { data } = await kairoSupabase
       .from("api_keys")
       .select("*")
       .eq("user_id", user.id)
@@ -48,7 +49,7 @@ const ApiKeys = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase.from("api_keys").insert({
+    const { error } = await kairoSupabase.from("api_keys").insert({
       user_id: user.id,
       name: newKey.name,
       provider_id: newKey.providerId,
@@ -72,7 +73,7 @@ const ApiKeys = () => {
   }, [toast]);
 
   const handleDelete = useCallback(async (id: string) => {
-    const { error } = await supabase.from("api_keys").delete().eq("id", id);
+    const { error } = await kairoSupabase.from("api_keys").delete().eq("id", id);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;

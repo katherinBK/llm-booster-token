@@ -13,6 +13,7 @@ import Billing from "./pages/Billing";
 import Logs from "./pages/Logs";
 import Health from "./pages/Health";
 import Settings from "./pages/Settings";
+import Playground from "./pages/Playground";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/dashboard/logs" element={<ProtectedRoute><Logs /></ProtectedRoute>} />
             <Route path="/dashboard/health" element={<ProtectedRoute><Health /></ProtectedRoute>} />
             <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/dashboard/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

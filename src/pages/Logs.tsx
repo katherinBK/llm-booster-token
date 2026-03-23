@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bell, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { kairoSupabase } from "@/integrations/supabase/kairo-client";
 
 const Logs = () => {
   const [filter] = useState("all");
@@ -22,7 +23,7 @@ const Logs = () => {
       return;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await kairoSupabase
       .from("usage_logs")
       .select("*")
       .eq("user_id", user.id)

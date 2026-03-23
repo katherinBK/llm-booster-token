@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { kairoSupabase } from "@/integrations/supabase/kairo-client";
 
 export interface DashboardStats {
   requestsToday: number;
@@ -51,7 +52,7 @@ export function useDashboardData() {
     todayStart.setHours(0, 0, 0, 0);
 
     // Fetch today's stats
-    const { data: todayLogs } = await supabase
+    const { data: todayLogs } = await kairoSupabase
       .from("usage_logs")
       .select("*")
       .eq("user_id", user.id)
@@ -63,7 +64,7 @@ export function useDashboardData() {
     const avgLatency = logs.length > 0 ? Math.round(logs.reduce((s, l) => s + l.latency_ms, 0) / logs.length) : 0;
 
     // Fetch total rTokens
-    const { data: allLogs } = await supabase
+    const { data: allLogs } = await kairoSupabase
       .from("usage_logs")
       .select("rtokens_generated, cost_usd, savings_usd")
       .eq("user_id", user.id);
@@ -77,7 +78,7 @@ export function useDashboardData() {
     setStats({ requestsToday, savingsToday, rTokensTotal, avgLatency, efficiencyMultiplier });
 
     // Fetch recent logs
-    const { data: recent } = await supabase
+    const { data: recent } = await kairoSupabase
       .from("usage_logs")
       .select("*")
       .eq("user_id", user.id)
@@ -102,7 +103,7 @@ export function useDashboardData() {
     // Re-fetch with created_at for chart
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const { data: weekLogs } = await supabase
+    const { data: weekLogs } = await kairoSupabase
       .from("usage_logs")
       .select("created_at, savings_usd")
       .eq("user_id", user.id)
@@ -128,14 +129,14 @@ export function useDashboardData() {
     fetchData();
 
     // Realtime subscription
-    const channel = supabase
+    const channel = kairoSupabase
       .channel("dashboard-usage")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "usage_logs" }, () => {
         fetchData();
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => { kairoSupabase.removeChannel(channel); };
   }, []);
 
   return { stats, recentLogs, chartData, loading, refetch: fetchData };
