@@ -3,8 +3,17 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/v1/(.*)", "destination": "/api/backend" },
-    { "source": "/api/payment/(.*)", "destination": "/api/backend" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/v1/(.*)",
+      "destination": "/api/backend"
+    },
+    {
+      "source": "/api/payment/(.*)",
+      "destination": "/api/backend"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
