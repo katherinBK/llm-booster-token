@@ -16,26 +16,33 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
 });
 
-const PORT = process.env.PORT || 3001;
-const server = app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
-});
-
-process.on('uncaughtException', (err) => {
-  console.error('SERVER CRASHED (Uncaught Exception):', err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('SERVER CRASHED (Unhandled Rejection):', reason);
-});
-
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  server.close(() => {
-    console.log('HTTP server closed');
+// Solo levanta el servidor HTTP cuando se ejecuta directamente (npm run dev local).
+// En Vercel serverless, el archivo es importado por api/backend.js y app.listen() no debe ejecutarse.
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  const server = app.listen(PORT, () => {
+    console.log(`Backend server running on port ${PORT}`);
   });
-});
 
-process.on('exit', (code) => {
-  console.log(`About to exit with code: ${code}`);
-});
+  process.on('uncaughtException', (err) => {
+    console.error('SERVER CRASHED (Uncaught Exception):', err);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('SERVER CRASHED (Unhandled Rejection):', reason);
+  });
+
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+      console.log('HTTP server closed');
+    });
+  });
+
+  process.on('exit', (code) => {
+    console.log(`About to exit with code: ${code}`);
+  });
+}
+
+// Exporta app para que Vercel pueda usarlo como serverless function
+module.exports = app;
