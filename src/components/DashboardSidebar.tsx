@@ -70,6 +70,17 @@ const DashboardSidebar = () => {
           <LogOut className="w-4 h-4" />
           Cerrar sesión
         </button>
+        
+        <a
+          href="https://explorer.solana.com/address/J3Fh7HnipJc86C54hf7QNd7Pgqhj7m4b1VHq1CyaB8pp?cluster=devnet"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-primary bg-primary/5 hover:bg-primary/10 transition-all duration-150 border border-primary/20"
+        >
+          <Activity className="w-4 h-4" />
+          Solana Explorer
+        </a>
+
         <div className="flex items-center justify-center gap-1.5 pt-2 opacity-60">
           <span className="text-[10px] text-muted-foreground">Powered by</span>
           <img src={solanaLogo} alt="Solana" className="w-3.5 h-3.5" />

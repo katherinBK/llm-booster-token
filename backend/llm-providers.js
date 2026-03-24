@@ -28,21 +28,34 @@ async function callLLM(provider, modelId, reqBody) {
     tokensOutput = completion.usage?.completion_tokens || 0;
 
   } else if (p === 'openrouter') {
+    if (!process.env.OPENROUTER_API_KEY) {
+      throw new Error('OPENROUTER_API_KEY is not defined in environment variables');
+    }
     const openai = new OpenAI({
       baseURL: 'https://openrouter.ai/api/v1',
       apiKey: process.env.OPENROUTER_API_KEY,
       defaultHeaders: {
-        'HTTP-Referer': 'http://localhost:5173',
+        'HTTP-Referer': 'https://kairo-protocol.vercel.app',
         'X-Title': 'Kairo LLM Booster',
       },
     });
-    const completion = await openai.chat.completions.create({
-      ...reqBody,
-      model: reqBody.model || modelId || 'anthropic/claude-3-haiku',
-    });
-    responseData = completion;
-    tokensInput = completion.usage?.prompt_tokens || 0;
-    tokensOutput = completion.usage?.completion_tokens || 0;
+    try {
+      const completion = await openai.chat.completions.create({
+        ...reqBody,
+        model: reqBody.model || modelId || 'anthropic/claude-3-haiku',
+      });
+      responseData = completion;
+      tokensInput = completion.usage?.prompt_tokens || 0;
+      tokensOutput = completion.usage?.completion_tokens || 0;
+    } catch (orError) {
+      console.error('--- OPENROUTER API ERROR ---');
+      console.error('Status:', orError.status);
+      console.error('Message:', orError.message);
+      if (orError.response) {
+        console.error('Response Data:', JSON.stringify(orError.response.data, null, 2));
+      }
+      throw orError;
+    }
 
   } else if (p === 'gemini' || p === 'google') {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
