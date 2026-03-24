@@ -71,7 +71,7 @@ graph TD
 
    Note: If you are signing up, the verification email could take 3 to 5 minutes to come, hang in there and after verificating your email, login with your credentials, it should work!
 
-Checkout our explorer! :Transaction | 4N6rYBPxvZKN5UdidFNDpRkzYGqPKuPcgLjkssBywEymvQMsn1f8vJ6AWxghKPiGGP5JsBoqjx3LQi1pnBavFoLh | Solana
+Checkout our explorer! : [Kairo explorer](https://explorer.solana.com/tx/4N6rYBPxvZKN5UdidFNDpRkzYGqPKuPcgLjkssBywEymvQMsn1f8vJ6AWxghKPiGGP5JsBoqjx3LQi1pnBavFoLh?cluster=devnet)
 
 ## 📄 License
 
