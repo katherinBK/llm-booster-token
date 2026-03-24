@@ -1,7 +1,15 @@
-const { Connection, Keypair, PublicKey } = require('@solana/web3.js');
-const { Program, AnchorProvider, Wallet, BN } = require('@coral-xyz/anchor');
-const idl = require('./idl.json');
-require('dotenv').config();
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import { Connection, Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
+import pkg from '@coral-xyz/anchor';
+const { Program, AnchorProvider, Wallet, BN } = pkg;
+import dotenv from 'dotenv';
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const idl = JSON.parse(fs.readFileSync(path.join(__dirname, 'idl.json'), 'utf-8'));
 
 // Configuración RPC (Devnet por defecto o Localnet)
 const connection = new Connection(process.env.SOLANA_RPC || 'https://api.devnet.solana.com', 'confirmed');
@@ -55,7 +63,7 @@ const registerUsageOnChain = async (userWalletPubkey, amount) => {
                 userState,
                 userPubkey,
                 admin: adminKeypair.publicKey,
-                systemProgram: require('@solana/web3.js').SystemProgram.programId
+                systemProgram: SystemProgram.programId
             })
             .rpc();
         
@@ -70,7 +78,9 @@ const registerUsageOnChain = async (userWalletPubkey, amount) => {
     }
 };
 
-module.exports = {
+export {
     registerUsageOnChain,
-    adminPubkey: adminKeypair.publicKey.toBase58()
+    adminKeypair
 };
+// Optional: export adminPubkey as a string
+export const adminPubkey = adminKeypair.publicKey.toBase58();

@@ -25,7 +25,7 @@ interface ApiKeyOption {
   modelId: string;
 }
 
-const BACKEND_URL = "http://localhost:3001/v1/chat/completions";
+const BACKEND_URL = import.meta.env.DEV ? "http://localhost:3001/v1/chat/completions" : "/v1/chat/completions";
 
 const Playground = () => {
   const [keys, setKeys] = useState<ApiKeyOption[]>([]);
@@ -125,7 +125,7 @@ const Playground = () => {
       const errorMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: `❌ Error: ${err.message}\n\nAsegúrate de que el backend esté corriendo en http://localhost:3001`,
+        content: `❌ Error: ${err.message}${import.meta.env.DEV ? '\\n\\nAsegúrate de que el backend esté corriendo en http://localhost:3001' : ''}`,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMsg]);

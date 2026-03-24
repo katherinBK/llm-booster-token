@@ -1,9 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+import 'dotenv/config.js';
+import express from 'express';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
 
-const llmRoutes = require('./routes/llm.routes');
-const paymentRoutes = require('./routes/payment.routes');
+import llmRoutes from './routes/llm.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 
 const app = express();
 app.use(cors());
@@ -17,8 +18,7 @@ app.get('/health', (req, res) => {
 });
 
 // Solo levanta el servidor HTTP cuando se ejecuta directamente (npm run dev local).
-// En Vercel serverless, el archivo es importado por api/backend.js y app.listen() no debe ejecutarse.
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const PORT = process.env.PORT || 3001;
   const server = app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
@@ -44,5 +44,4 @@ if (require.main === module) {
   });
 }
 
-// Exporta app para que Vercel pueda usarlo como serverless function
-module.exports = app;
+export default app;

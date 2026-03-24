@@ -1,6 +1,6 @@
-const express = require('express');
-const { Connection, PublicKey, Keypair } = require('@solana/web3.js');
-const crypto = require('crypto');
+import express from 'express';
+import { Connection, PublicKey, Keypair } from '@solana/web3.js';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -60,4 +60,4 @@ router.post('/verify-payment', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

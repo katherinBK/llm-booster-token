@@ -2,9 +2,9 @@
 // Módulo separado para la lógica de consumo de LLMs.
 // Soporta: OpenAI, OpenRouter, Gemini/Google.
 
-const { OpenAI } = require('openai');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const crypto = require('crypto');
+import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import crypto from 'crypto';
 
 /**
  * Llama al LLM correspondiente según el provider configurado en la API Key.
@@ -88,4 +88,4 @@ async function callLLM(provider, modelId, reqBody) {
   return { responseData, tokensInput, tokensOutput };
 }
 
-module.exports = { callLLM };
+export { callLLM };

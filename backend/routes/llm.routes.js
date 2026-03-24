@@ -1,8 +1,9 @@
-const express = require('express');
-const { createClient } = require('@supabase/supabase-js');
-const crypto = require('crypto');
-const { Keypair } = require('@solana/web3.js');
-const { callLLM } = require('../llm-providers');
+import 'dotenv/config.js';
+import express from 'express';
+import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
+import { Keypair } from '@solana/web3.js';
+import { callLLM } from '../llm-providers.js';
 
 const router = express.Router();
 
@@ -111,5 +112,5 @@ router.post('/chat/completions', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
 
