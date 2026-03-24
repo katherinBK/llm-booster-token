@@ -9,11 +9,20 @@ import CreateKeyForm from "@/components/api-keys/CreateKeyForm";
 import type { ApiKey } from "@/components/api-keys/types";
 import { supabase } from "@/integrations/supabase/client";
 import { kairoSupabase } from "@/integrations/supabase/kairo-client";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const ApiKeys = () => {
   const [keys, setKeys] = useState<ApiKey[]>([]);
   const [showKeyId, setShowKeyId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -93,10 +102,37 @@ const ApiKeys = () => {
             <h1 className="text-xl font-bold text-foreground">API Keys</h1>
             <p className="text-xs text-muted-foreground">Conecta tu propio proveedor LLM (BYOK) o genera claves Kairo</p>
           </div>
-          <Button variant="hero" size="sm" className="gap-2" onClick={() => setIsCreating(true)}>
+          <Button variant="hero" size="sm" className="gap-2" onClick={() => setShowRecommendation(true)}>
             <Plus className="w-4 h-4" /> Nueva clave
           </Button>
         </header>
+
+        <Dialog open={showRecommendation} onOpenChange={setShowRecommendation}>
+          <DialogContent className="sm:max-w-md bg-card border-border">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-primary" />
+                Recomendación para pruebas
+              </DialogTitle>
+              <DialogDescription className="py-2 text-muted-foreground leading-relaxed">
+                Debido a la alta demanda en nuestros modelos premium, recomendamos encarecidamente seleccionar el modelo <span className="text-primary font-bold">"Microsoft Phi 4"</span> o <span className="text-primary font-bold">"Llama 4 Scout" (gpt-oss)</span> para asegurar una respuesta rápida y éxito en tus pruebas iniciales.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-start">
+              <Button 
+                type="button" 
+                variant="hero" 
+                className="w-full sm:w-auto"
+                onClick={() => {
+                  setShowRecommendation(false);
+                  setIsCreating(true);
+                }}
+              >
+                Entendido, crear clave
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <div className="p-8 max-w-4xl space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -139,7 +175,7 @@ const ApiKeys = () => {
               <Key className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
               <p className="text-sm font-medium text-foreground mb-1">No tienes API keys</p>
               <p className="text-xs text-muted-foreground mb-4">Conecta tu proveedor LLM o genera una clave Kairo</p>
-              <Button variant="hero" size="sm" className="gap-2" onClick={() => setIsCreating(true)}>
+              <Button variant="hero" size="sm" className="gap-2" onClick={() => setShowRecommendation(true)}>
                 <Plus className="w-4 h-4" /> Crear primera clave
               </Button>
             </motion.div>
