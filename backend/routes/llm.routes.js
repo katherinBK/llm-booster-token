@@ -1,9 +1,10 @@
-import 'dotenv/config.js';
+import 'dotenv/config';
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { Keypair } from '@solana/web3.js';
 import { callLLM } from '../llm-providers.js';
+import { registerUsageOnChain } from '../solana-client.js';
 
 const router = express.Router();
 
@@ -68,7 +69,6 @@ router.post('/chat/completions', async (req, res) => {
 
     const latency = Date.now() - startTime;
     const rtokensGenerated = Math.floor((tokensInput + tokensOutput) / 10);
-    const { registerUsageOnChain } = require('../solana-client');
 
     // Wallet-less Flow: generate deterministic pubkey from user ID
     const userWalletPubkey = generateUserDeterministicPubkey(userId);
