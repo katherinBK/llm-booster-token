@@ -1,73 +1,64 @@
-# Welcome to your Lovable project
+# Kairo: LLM Booster & rToken Protocol
 
-## Project info
+Kairo is a high-performance LLM proxy and token optimization protocol built on Solana. It enables "Wallet-less Checkout" for AI tokens, allowing users to pay with traditional methods while settling usage on-chain via the rToken standard.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Architecture Overview
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```mermaid
+graph TD
+    User((User)) -->|Standard API Request| Proxy[Kairo Backend Proxy]
+    Proxy -->|1. Validate API Key| DB[(Supabase)]
+    Proxy -->|2. Parallel Processing| LLM[LLM Provider: OpenRouter/Gemini]
+    Proxy -->|3. Async Settlement| Solana[Solana Blockchain: rToken Program]
+    LLM -->|Response Data| Proxy
+    Proxy -->|Optimized Response| User
+    Solana -->|TX Signature| DB
 ```
 
-**Edit a file directly in GitHub**
+## ✨ Key Features
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **rTokens (Reward Tokens)**: Every request generates fractional rTokens, giving users up to 1.5x more value for their credit.
+- **Wallet-less Checkout**: Users don't need a browser wallet (Phantom/Solflare). Kairo handles deterministic key management in the background.
+- **BYOK (Bring Your Own Key)**: Support for OpenAI, Gemini, and OpenRouter keys with automated optimization.
+- **Live Dashboard**: Real-time logging of latency, token usage, and blockchain settlement signatures.
 
-**Use GitHub Codespaces**
+## 🛠️ Technical Stack
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Frontend**: React 18, Vite, Tailwind CSS, Shadcn UI, Framer Motion.
+- **Backend**: Node.js (ES Modules), Express, Supabase.
+- **Blockchain**: Solana (Anchor Protocol), Rust.
+- **Infrastructure**: Vercel (Serverless Functions).
 
-## What technologies are used for this project?
+## ⚙️ Environment Variables (Backend)
 
-This project is built with:
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_KAIRO_URL` | Your standalone Supabase project URL |
+| `SUPABASE_KAIRO_SERVICE_KEY` | Service role key for backend DB access |
+| `OPENAI_API_KEY` | (Optional) For direct OpenAI requests |
+| `GEMINI_API_KEY` | (Optional) For Google AI requests |
+| `OPENROUTER_API_KEY` | (Recommended) For aggregated free models |
+| `SOLANA_RPC` | Solana RPC URL (e.g., https://api.devnet.solana.com) |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📦 Setup & Development
 
-## How can I deploy this project?
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/katherinBK/llm-booster-token.git
+   cd llm-booster-token
+   npm install
+   ```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+2. **Frontend Dev**:
+   ```bash
+   npm run dev
+   ```
 
-## Can I connect a custom domain to my Lovable project?
+3. **Backend Dev**:
+   ```bash
+   cd backend
+   npm run dev
+   ```
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+MIT License. Built for the future of decentralized AI.
