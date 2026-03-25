@@ -67,7 +67,8 @@ graph TD
 
    Mail: kathe73207@gmail.com
 
-   Password: Kat123
+   Password: Kat123 (o kat123)
+   
    API Key funcional a usar: ""produccion""
 
    Note: If you are signing up, the verification email could take 3 to 5 minutes to come, hang in there and after verificating your email, login with your credentials, it should work!
