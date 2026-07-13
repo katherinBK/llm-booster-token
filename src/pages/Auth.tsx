@@ -38,6 +38,35 @@ const Auth = () => {
 
     try {
       if (isLogin) {
+        // In production, optionally force using the backend proxy to avoid any
+        // mismatched build-time env values. Set VITE_FORCE_PROXY=true in Vercel.
+        const forceProxy = import.meta.env.VITE_FORCE_PROXY === 'true';
+        const apiBase = import.meta.env.VITE_API_BASE || '';
+
+        if (forceProxy && apiBase) {
+          try {
+            const resp = await fetch(`${apiBase}/auth/signin`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: form.email, password: form.password }),
+            });
+            if (!resp.ok) {
+              const errBody = await resp.json().catch(() => ({}));
+              throw new Error(errBody.error || 'Auth proxy failed');
+            }
+            const respJson = await resp.json();
+            if (respJson.access_token) {
+              navigate('/dashboard');
+              return;
+            }
+            throw new Error(respJson.error || 'Auth proxy error');
+          } catch (proxyErr) {
+            console.error('Auth proxy error:', proxyErr);
+            toast.error('Error de autenticación (proxy): ' + (proxyErr.message || 'Revisa servidor'));
+            return;
+          }
+        }
+
         let data, error;
         try {
           ({ data, error } = await supabase.auth.signInWithPassword({
@@ -47,7 +76,6 @@ const Auth = () => {
         } catch (networkErr) {
           // Fallback: use backend proxy if direct fetch to Supabase fails (CORS/network)
           try {
-            const apiBase = import.meta.env.VITE_API_BASE || '';
             const resp = await fetch(`${apiBase}/auth/signin`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -55,7 +83,6 @@ const Auth = () => {
             });
             if (!resp.ok) throw new Error('Auth proxy failed');
             const respJson = await resp.json();
-            // supabase client expects session in data.session shape; redirect on success
             if (respJson.access_token) {
               navigate('/dashboard');
               return;
