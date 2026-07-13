@@ -25,6 +25,8 @@ const Auth = () => {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate("/dashboard");
+    }).catch(() => {
+      toast.error("No se pudo validar la sesión. Revisa la configuración de Supabase.");
     });
 
     return () => subscription.unsubscribe();
@@ -36,40 +38,86 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: form.email,
-          password: form.password,
-        });
+        let data, error;
+        try {
+          ({ data, error } = await supabase.auth.signInWithPassword({
+            email: form.email,
+            password: form.password,
+          }));
+        } catch (networkErr) {
+          // Fallback: use backend proxy if direct fetch to Supabase fails (CORS/network)
+          try {
+            const resp = await fetch('/auth/signin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: form.email, password: form.password }),
+            });
+            if (!resp.ok) throw new Error('Auth proxy failed');
+            const respJson = await resp.json();
+            // supabase client expects session in data.session shape; redirect on success
+            if (respJson.access_token) {
+              navigate('/dashboard');
+              return;
+            }
+            throw new Error(respJson.error || 'Auth proxy error');
+          } catch (proxyErr) {
+            console.error('Network signin error, proxy failed:', proxyErr);
+            toast.error('Error de red: no se pudo conectar a Supabase. Revisa CORS o la configuración del servidor.');
+            return;
+          }
+        }
+
         if (error) {
           if (error.message.includes("Invalid login credentials")) {
             toast.error("Email o contraseña incorrectos");
           } else {
-            toast.error(error.message);
+            toast.error(error.message || "No se pudo iniciar sesión. Revisa la configuración de Supabase.");
           }
+          return;
+        }
+
+        if (!data.session) {
+          toast.error("La sesión no pudo iniciarse. Comprueba la configuración del proyecto en Supabase.");
         }
       } else {
-        // Check if email already exists by trying to sign up
-        const { error } = await supabase.auth.signUp({
-          email: form.email,
-          password: form.password,
-          options: {
-            data: { full_name: form.fullName },
-            emailRedirectTo: window.location.origin,
-          },
-        });
+        let error;
+        try {
+          const res = await fetch('/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: form.email, password: form.password, data: { full_name: form.fullName } }),
+          });
+          const body = await res.json();
+          if (!res.ok) throw new Error(body.error || 'Signup proxy failed');
+          toast.success('Revisa tu email para confirmar tu cuenta');
+          return;
+        } catch (proxyErr) {
+          // Fallback to direct client signup if proxy fails
+          const signupResult = await supabase.auth.signUp({
+            email: form.email,
+            password: form.password,
+            options: {
+              data: { full_name: form.fullName },
+              emailRedirectTo: window.location.origin,
+            },
+          });
+          error = signupResult.error;
+        }
+
         if (error) {
           if (error.message.includes("already registered")) {
             toast.error("Este email ya está registrado. Inicia sesión.");
             setIsLogin(true);
           } else {
-            toast.error(error.message);
+            toast.error(error.message || "No se pudo crear la cuenta. Revisa la configuración de Supabase.");
           }
         } else {
           toast.success("Revisa tu email para confirmar tu cuenta");
         }
       }
     } catch (err) {
-      toast.error("Error inesperado. Intenta de nuevo.");
+      console.error(err);
+      toast.error("Error inesperado. Intenta de nuevo. Si el problema persiste, revisa la configuración de Supabase.");
     } finally {
       setLoading(false);
     }

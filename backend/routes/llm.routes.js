@@ -15,9 +15,9 @@ const supabaseServiceKey = process.env.SUPABASE_KAIRO_SERVICE_KEY || process.env
 let supabase;
 if (supabaseUrl && supabaseServiceKey) {
   supabase = createClient(supabaseUrl, supabaseServiceKey);
-  console.log(`✅ Supabase conectado a: ${supabaseUrl}`);
+  console.log(` Supabase conectado a: ${supabaseUrl}`);
 } else {
-  console.warn('⚠️  No se encontró SUPABASE_KAIRO_SERVICE_KEY. El backend no puede validar API Keys.');
+  console.warn(' No se encontró SUPABASE_KAIRO_SERVICE_KEY. El backend no puede validar API Keys.');
 }
 
 // Deterministic wallet generator based on User ID

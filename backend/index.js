@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 
 import llmRoutes from './routes/llm.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
+import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/v1', llmRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/auth', authRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
