@@ -40,7 +40,7 @@ const Auth = () => {
       if (isLogin) {
         // In production, optionally force using the backend proxy to avoid any
         // mismatched build-time env values. Set VITE_FORCE_PROXY=true in Vercel.
-        const forceProxy = import.meta.env.VITE_FORCE_PROXY === 'true';
+        const forceProxy = String(import.meta.env.VITE_FORCE_PROXY).toLowerCase() === 'true';
         const apiBase = import.meta.env.VITE_API_BASE || '';
 
         if (forceProxy) {
