@@ -43,9 +43,10 @@ const Auth = () => {
         const forceProxy = import.meta.env.VITE_FORCE_PROXY === 'true';
         const apiBase = import.meta.env.VITE_API_BASE || '';
 
-        if (forceProxy && apiBase) {
+        if (forceProxy) {
           try {
-            const resp = await fetch(`${apiBase}/auth/signin`, {
+            const signinUrl = apiBase ? `${apiBase}/auth/signin` : '/auth/signin';
+            const resp = await fetch(signinUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: form.email, password: form.password }),
@@ -76,7 +77,8 @@ const Auth = () => {
         } catch (networkErr) {
           // Fallback: use backend proxy if direct fetch to Supabase fails (CORS/network)
           try {
-            const resp = await fetch(`${apiBase}/auth/signin`, {
+            const signinUrl = apiBase ? `${apiBase}/auth/signin` : '/auth/signin';
+            const resp = await fetch(signinUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: form.email, password: form.password }),
