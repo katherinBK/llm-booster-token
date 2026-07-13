@@ -29,7 +29,19 @@ router.post('/signin', async (req, res) => {
 
     const data = await response.json();
 
-    if (!response.ok) return res.status(response.status).json(data);
+    if (!response.ok) {
+      // Log detailed info to help debugging in production
+      console.error('Supabase auth error', {
+        url: tokenUrl,
+        status: response.status,
+        statusText: response.statusText,
+        body: data,
+      });
+      return res.status(response.status).json(data);
+    }
+
+    // Success: log minimal info
+    console.log('Auth proxy signin success', { url: tokenUrl, status: response.status });
     return res.json(data);
   } catch (err) {
     console.error('Auth proxy /signin error', err);
@@ -55,7 +67,17 @@ router.post('/signup', async (req, res) => {
     });
 
     const body = await response.json();
-    if (!response.ok) return res.status(response.status).json(body);
+    if (!response.ok) {
+      console.error('Supabase auth signup error', {
+        url: signupUrl,
+        status: response.status,
+        statusText: response.statusText,
+        body,
+      });
+      return res.status(response.status).json(body);
+    }
+
+    console.log('Auth proxy signup success', { url: signupUrl, status: response.status });
     return res.json(body);
   } catch (err) {
     console.error('Auth proxy /signup error', err);

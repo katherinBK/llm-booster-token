@@ -47,7 +47,8 @@ const Auth = () => {
         } catch (networkErr) {
           // Fallback: use backend proxy if direct fetch to Supabase fails (CORS/network)
           try {
-            const resp = await fetch('/auth/signin', {
+            const apiBase = import.meta.env.VITE_API_BASE || '';
+            const resp = await fetch(`${apiBase}/auth/signin`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: form.email, password: form.password }),
@@ -82,7 +83,8 @@ const Auth = () => {
       } else {
         let error;
         try {
-          const res = await fetch('/auth/signup', {
+          const apiBase = import.meta.env.VITE_API_BASE || '';
+          const res = await fetch(`${apiBase}/auth/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: form.email, password: form.password, data: { full_name: form.fullName } }),
