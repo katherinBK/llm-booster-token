@@ -1,5 +1,23 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "echo 'Root is not deployable. Deploy frontend/ or backend/ projects instead.'"
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    { "source": "/auth/:path*", "destination": "/api/server" },
+    { "source": "/v1/:path*",   "destination": "/api/server" },
+    { "source": "/api/payment/:path*", "destination": "/api/server" },
+    { "source": "/health",      "destination": "/api/server" },
+    { "source": "/(.*)",        "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS,PATCH" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, apikey, X-Requested-With" }
+      ]
+    }
+  ]
 }

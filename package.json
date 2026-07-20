@@ -2,16 +2,29 @@
   "name": "kairo-protocol",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "type": "module",
   "scripts": {
     "dev": "concurrently -n BACKEND,FRONTEND -c cyan,magenta \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "build": "npm run build --workspace=frontend",
-    "install:all": "npm install --workspaces"
+    "build": "cd frontend && npm install && npm run build"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@google/generative-ai": "^0.24.1",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "@supabase/supabase-js": "^2.99.3",
+    "bs58": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "openai": "^6.32.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
