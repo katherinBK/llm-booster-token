@@ -8,10 +8,16 @@ import paymentRoutes from './routes/payment.routes.js';
 import authRoutes from './routes/auth.routes.js';
 
 const app = express();
+
+// Handle OPTIONS preflight requests for ALL routes first
+app.options('*', cors());
+
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'apikey', 'X-Requested-With'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 app.use(express.json());
 

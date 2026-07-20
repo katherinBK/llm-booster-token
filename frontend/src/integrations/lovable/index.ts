@@ -1,18 +1,10 @@
-// Stub de integración Lovable — deshabilitado fuera del editor de Lovable.
-// La librería @lovable.dev/cloud-auth-js solo funciona dentro de la plataforma
-// Lovable y apunta a un proyecto interno de Supabase que no es accesible en
-// producción. Al exportar un stub vacío evitamos que se intenten peticiones a
-// ese proyecto inexistente.
-
-type SignInOptions = {
-  redirect_uri?: string;
-  extraParams?: Record<string, string>;
-};
-
+// Lovable integration stub — disabled outside the Lovable editor.
+// This file exists solely to satisfy imports so the app compiles in production.
+// It must NOT initialize any real auth client, as it would target the wrong Supabase project.
 export const lovable = {
   auth: {
-    signInWithOAuth: async (_provider: "google" | "apple", _opts?: SignInOptions) => {
-      return { error: new Error("OAuth via Lovable no está disponible en producción. Usa Supabase directamente.") };
-    },
+    signInWithOAuth: async () => ({
+      error: new Error("OAuth via Lovable is disabled in production. Use Supabase directly."),
+    }),
   },
 };

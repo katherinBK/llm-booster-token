@@ -16,16 +16,13 @@ const Auth = () => {
   const [form, setForm] = useState({ email: "", password: "", fullName: "" });
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/dashboard");
-      }
-    });
-
+    // Check if we already have a valid session and redirect
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate("/dashboard");
-    }).catch(() => {
-      toast.error("No se pudo validar la sesión. Revisa la configuración de Supabase.");
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate("/dashboard");
     });
 
     return () => subscription.unsubscribe();
@@ -37,6 +34,7 @@ const Auth = () => {
 
     try {
       if (isLogin) {
+        // Direct Supabase auth — clean, no proxies, no redirects
         const { data, error } = await supabase.auth.signInWithPassword({
           email: form.email,
           password: form.password,
@@ -48,40 +46,46 @@ const Auth = () => {
           } else {
             toast.error(error.message);
           }
-          setLoading(false);
           return;
         }
 
         if (data.session) {
-          toast.success("Bienvenido a Kairo Protocol");
+          toast.success("Bienvenido de vuelta 👋");
           navigate("/dashboard");
         }
       } else {
+        // Direct Supabase signup
         const { data, error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
           options: {
-            data: { full_name: form.fullName }
-          }
+            data: { full_name: form.fullName },
+          },
         });
 
         if (error) {
-          if (error.message.includes("already registered")) {
+          if (error.message.toLowerCase().includes("already registered")) {
             toast.error("Este email ya está registrado. Inicia sesión.");
             setIsLogin(true);
           } else {
-            toast.error(error.message || "No se pudo crear la cuenta. Revisa la configuración de Supabase.");
+            toast.error(error.message);
           }
-          setLoading(false);
           return;
         }
 
-        toast.success("Cuenta creada exitosamente. Ya puedes iniciar sesión.");
-        setIsLogin(true);
+        // If the user gets a session immediately (email confirmation disabled),
+        // navigate directly to dashboard. Otherwise prompt to check email.
+        if (data.session) {
+          toast.success("¡Cuenta creada! Bienvenido a Kairo Protocol 🚀");
+          navigate("/dashboard");
+        } else {
+          toast.success("¡Cuenta creada! Revisa tu email para confirmar.");
+          setIsLogin(true);
+        }
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error inesperado. Intenta de nuevo. Si el problema persiste, revisa la configuración de Supabase.");
+    } catch (err: unknown) {
+      console.error("Auth error:", err);
+      toast.error("Error inesperado. Por favor intenta de nuevo.");
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,3 @@
-// Re-exportamos el cliente principal de Supabase como `kairoSupabase`.
-// Ambos clientes apuntan al mismo proyecto (wyywukatjjksaetvoekg),
-// así que usar una única instancia evita errores de variables mal configuradas.
+// Re-export the single shared Supabase client for all Kairo data queries.
+// Using one instance avoids race conditions and duplicate auth listeners.
 export { supabase as kairoSupabase } from './client';
