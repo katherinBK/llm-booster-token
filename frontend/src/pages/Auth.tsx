@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,102 +37,33 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        // In production, optionally force using the backend proxy to avoid any
-        // mismatched build-time env values. Set VITE_FORCE_PROXY=true in Vercel.
-        const forceProxy = String(import.meta.env.VITE_FORCE_PROXY).toLowerCase() === 'true';
-        const apiBase = import.meta.env.VITE_API_BASE || '';
-
-        if (forceProxy) {
-          try {
-            const signinUrl = apiBase ? `${apiBase}/auth/signin` : '/auth/signin';
-            const resp = await fetch(signinUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: form.email, password: form.password }),
-            });
-            if (!resp.ok) {
-              const errBody = await resp.json().catch(() => ({}));
-              throw new Error(errBody.error || 'Auth proxy failed');
-            }
-            const respJson = await resp.json();
-            if (respJson.access_token) {
-              navigate('/dashboard');
-              return;
-            }
-            throw new Error(respJson.error || 'Auth proxy error');
-          } catch (proxyErr) {
-            console.error('Auth proxy error:', proxyErr);
-            toast.error('Error de autenticación (proxy): ' + (proxyErr.message || 'Revisa servidor'));
-            return;
-          }
-        }
-
-        let data, error;
-        try {
-          ({ data, error } = await supabase.auth.signInWithPassword({
-            email: form.email,
-            password: form.password,
-          }));
-        } catch (networkErr) {
-          // Fallback: use backend proxy if direct fetch to Supabase fails (CORS/network)
-          try {
-            const signinUrl = apiBase ? `${apiBase}/auth/signin` : '/auth/signin';
-            const resp = await fetch(signinUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: form.email, password: form.password }),
-            });
-            if (!resp.ok) throw new Error('Auth proxy failed');
-            const respJson = await resp.json();
-            if (respJson.access_token) {
-              navigate('/dashboard');
-              return;
-            }
-            throw new Error(respJson.error || 'Auth proxy error');
-          } catch (proxyErr) {
-            console.error('Network signin error, proxy failed:', proxyErr);
-            toast.error('Error de red: no se pudo conectar a Supabase. Revisa CORS o la configuración del servidor.');
-            return;
-          }
-        }
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password,
+        });
 
         if (error) {
           if (error.message.includes("Invalid login credentials")) {
             toast.error("Email o contraseña incorrectos");
           } else {
-            toast.error(error.message || "No se pudo iniciar sesión. Revisa la configuración de Supabase.");
+            toast.error(error.message);
           }
+          setLoading(false);
           return;
         }
 
-        if (!data.session) {
-          toast.error("La sesión no pudo iniciarse. Comprueba la configuración del proyecto en Supabase.");
+        if (data.session) {
+          toast.success("Bienvenido a Kairo Protocol");
+          navigate("/dashboard");
         }
       } else {
-        let error;
-        try {
-          const apiBase = import.meta.env.VITE_API_BASE || '';
-          const res = await fetch(`${apiBase}/auth/signup`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: form.email, password: form.password, data: { full_name: form.fullName } }),
-          });
-          const body = await res.json();
-          if (!res.ok) throw new Error(body.error || 'Signup proxy failed');
-          toast.success('Revisa tu email para confirmar tu cuenta');
-          return;
-        } catch (proxyErr) {
-          // Fallback to direct client signup if proxy fails
-          const signupResult = await supabase.auth.signUp({
-            email: form.email,
-            password: form.password,
-            options: {
-              data: { full_name: form.fullName },
-              emailRedirectTo: window.location.origin,
-            },
-          });
-          error = signupResult.error;
-        }
+        const { data, error } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: {
+            data: { full_name: form.fullName }
+          }
+        });
 
         if (error) {
           if (error.message.includes("already registered")) {
@@ -142,9 +72,12 @@ const Auth = () => {
           } else {
             toast.error(error.message || "No se pudo crear la cuenta. Revisa la configuración de Supabase.");
           }
-        } else {
-          toast.success("Revisa tu email para confirmar tu cuenta");
+          setLoading(false);
+          return;
         }
+
+        toast.success("Cuenta creada exitosamente. Ya puedes iniciar sesión.");
+        setIsLogin(true);
       }
     } catch (err) {
       console.error(err);

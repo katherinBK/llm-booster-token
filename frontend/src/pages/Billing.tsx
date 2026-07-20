@@ -74,7 +74,9 @@ const Billing = () => {
     setIsGenerating(true);
     setPaymentData(null);
     try {
-      const res = await fetch(import.meta.env.DEV ? "http://localhost:3001/api/payment/generate-payment" : "/api/payment/generate-payment", {
+      let apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://kairo-server-delta.vercel.app');
+      apiBase = apiBase.replace(/\/+$/, '');
+      const res = await fetch(`${apiBase}/api/payment/generate-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, memo: `Pago Plan ${planName}` })
@@ -94,7 +96,9 @@ const Billing = () => {
     if (!paymentData) return;
     setIsVerifying(true);
     try {
-      const res = await fetch(import.meta.env.DEV ? "http://localhost:3001/api/payment/verify-payment" : "/api/payment/verify-payment", {
+      let apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://kairo-server-delta.vercel.app');
+      apiBase = apiBase.replace(/\/+$/, '');
+      const res = await fetch(`${apiBase}/api/payment/verify-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reference: paymentData.reference })

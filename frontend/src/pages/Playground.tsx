@@ -25,7 +25,9 @@ interface ApiKeyOption {
   modelId: string;
 }
 
-const BACKEND_URL = import.meta.env.DEV ? "http://localhost:3001/v1/chat/completions" : "/v1/chat/completions";
+let apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : 'https://kairo-server-delta.vercel.app');
+apiBase = apiBase.replace(/\/+$/, '');
+const BACKEND_URL = `${apiBase}/v1/chat/completions`;
 
 const Playground = () => {
   const [keys, setKeys] = useState<ApiKeyOption[]>([]);

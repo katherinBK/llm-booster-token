@@ -154,7 +154,7 @@ const ApiKeys = () => {
                   Usa tu clave Kairo en cualquier SDK (OpenAI/LangChain) cambiando la Base URL. Solo necesitas el header estándar <code className="bg-muted px-1 py-0.5 rounded">Authorization: Bearer</code>.
                 </p>
                 <code className="text-sm">
-                  {import.meta.env.DEV ? "http://localhost:3001" : "https://kairo-protocol.vercel.app"}/v1
+                  {import.meta.env.DEV ? "http://localhost:3001" : "https://kairo-server-delta.vercel.app"}/v1
                 </code>
               </div>
             </div>
